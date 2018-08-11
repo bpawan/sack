@@ -4,11 +4,17 @@ import com.bpawan.api.HttpServer
 import com.bpawan.api.resource.SongsRoutes
 import com.bpawan.api.service.SongService
 import com.bpawan.dal.CassandraClient
-import com.bpawan.msg.KafkaProducer
+import com.bpawan.dal.database.SongsDatabase
+import com.bpawan.msg.{KafkaProducerSettings, SongsProducer}
 
-object App extends App with SongsRoutes {
+object App extends App {
 
-  lazy val songService = new SongService(CassandraClient.connector, KafkaProducer.producerSettings)
+  lazy val songsDatabase = new SongsDatabase(CassandraClient.connector)
+  lazy val songsProducer = new SongsProducer(KafkaProducerSettings.producerSettings)
 
-  HttpServer.serve(songService)
+  lazy val songService = new SongService(songsDatabase, songsProducer)
+
+  lazy val songsRouts = new SongsRoutes(songService)
+
+  HttpServer.serve(songsRouts.songRoutes)
 }

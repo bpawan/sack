@@ -5,7 +5,7 @@ import akka.kafka.ProducerSettings
 import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.kafka.common.serialization.{ByteArraySerializer, StringSerializer}
 
-object KafkaProducer {
+object KafkaProducerSettings {
   val system: ActorSystem = ActorSystem.create("messaging-system")
 
   val config: Config = ConfigFactory.load()
